@@ -39,7 +39,6 @@ def add_to_inventory(inventory, added_items):
 #   in descending order
 # - "count,asc" means the table is ordered by count in ascending order
 def print_table(inventory, order=None):
-    parameter_list = [0, "count,asc", "count,desc"]
     # sorting dictionary elements in ascending order
     sortvalues = OrderedDict(sorted(inventory.items(), key=lambda t: t[1]))
     # sorting dictionary elements in descending order
