@@ -50,12 +50,12 @@ def print_table(inventory, order=None):
     if order == "count,desc":
         for k, v in reversevalues.items():
                 print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
-        if order == "count,asc":
-            for k, v in sortvalues.items():
-                print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
-        elif order == 0:
-            for k, v in inventory.items():
-                print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
+    if order == "count,asc":
+        for k, v in sortvalues.items():
+            print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
+    elif order is None:
+        for k, v in inventory.items():
+            print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
     print("=" * (c_length+20))
     print("Total number of items: "+str(sum(inventory.values())))
 
