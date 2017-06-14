@@ -16,19 +16,25 @@ def getcharlength(listofelements):
 
 # Displays inventory in all its glory
 def display_inventory(inventory):
-    print("Inventory:")
-    for i in inventory.keys():
-        print(str(inventory[i])+" "+str(i))
-    print("Total number of items: "+str(sum(inventory.values())))
+    try:
+        print("Inventory:")
+        for i in inventory.keys():
+            print(str(inventory[i])+" "+str(i))
+        print("Total number of items: "+str(sum(inventory.values())))
+    except AttributeError:
+        print("Inventory argument must be a dictionary!")
 
 
 # Adds to the inventory dictionary a list of items from added_items.
 def add_to_inventory(inventory, added_items):
-    for i in added_items:
-        if str(i) not in inventory.keys():
-            inventory[i] = 0
-        inventory[i] += 1
-    return inventory
+    try:
+        for i in added_items:
+            if str(i) not in inventory.keys():
+                inventory[i] = 0
+            inventory[i] += 1
+        return inventory
+    except AttributeError:
+        print("Inventory argument must be a dictionary!")
 
 
 # Takes your inventory and displays it in a well-organized table with
@@ -39,25 +45,28 @@ def add_to_inventory(inventory, added_items):
 #   in descending order
 # - "count,asc" means the table is ordered by count in ascending order
 def print_table(inventory, order=None):
-    # sorting dictionary elements in ascending order
-    sortvalues = OrderedDict(sorted(inventory.items(), key=lambda t: t[1]))
-    # sorting dictionary elements in descending order
-    reversevalues = OrderedDict(sorted(inventory.items(), key=lambda t: t[1], reverse=True))
-    c_length = getcharlength(inventory.keys())  # Needed for dynamic column length
-    print("Inventory")
-    print("{:>15}{:>{width}}".format("count", "item name", width=c_length+5))
-    print("=" * (c_length+20))
-    if order == "count,desc":
-        for k, v in reversevalues.items():
+    try:
+        # sorting dictionary elements in ascending order
+        sortvalues = OrderedDict(sorted(inventory.items(), key=lambda t: t[1]))
+        # sorting dictionary elements in descending order
+        reversevalues = OrderedDict(sorted(inventory.items(), key=lambda t: t[1], reverse=True))
+        c_length = getcharlength(inventory.keys())  # Needed for dynamic column length
+        print("Inventory")
+        print("{:>15}{:>{width}}".format("count", "item name", width=c_length+5))
+        print("=" * (c_length+20))
+        if order == "count,desc":
+            for k, v in reversevalues.items():
+                    print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
+        if order == "count,asc":
+            for k, v in sortvalues.items():
                 print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
-    if order == "count,asc":
-        for k, v in sortvalues.items():
-            print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
-    elif order is None:
-        for k, v in inventory.items():
-            print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
-    print("=" * (c_length+20))
-    print("Total number of items: "+str(sum(inventory.values())))
+        elif order is None:
+            for k, v in inventory.items():
+                print("{:>15}{:>{width}}".format(str(v), str(k), width=c_length+5))
+        print("=" * (c_length+20))
+        print("Total number of items: "+str(sum(inventory.values())))
+    except AttributeError:
+        print("Inventory argument must be a dictionary!")
 
 
 # Imports new inventory items from a file
@@ -65,11 +74,14 @@ def print_table(inventory, order=None):
 # "import_inventory.csv". The import automatically merges items by name.
 # The file format is plain text with comma separated values (CSV).
 def import_inventory(inventory, filename="import_inventory.csv"):
-    with open(filename, "r") as f:
-        reader = csv.reader(f)
-        for row in reader:  # Handles multiple rows for great justice
-            inventory = add_to_inventory(inventory, row)
-        return inventory
+    try:
+        with open(filename, "r") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                inventory = add_to_inventory(inventory, row)
+            return inventory
+    except AttributeError:
+        print("Inventory argument must be a dictionary!")
 
 
 # Exports the inventory into a .csv file.
@@ -77,18 +89,21 @@ def import_inventory(inventory, filename="import_inventory.csv"):
 # called "export_inventory.csv". The file format is the same plain text
 # with comma separated values (CSV).
 def export_inventory(inventory, filename="export_inventory.csv", multirows=False):
-    exporting = inventory
-    if multirows is True:  # Multirows exports separate dictionary keys to separate rows
-        with open(filename, "w") as f:
-            w = csv.writer(f, delimiter=",")
-            for k, v in exporting.items():
-                w.writerow([k]*v)
-    else:
-        with open(filename, "w") as f:
-            w = csv.writer(f, inventory.keys(), delimiter=",")
-            items = []
-            for k in inventory.keys():
-                count = inventory[k]
-                for i in range(0, count):
-                    items.append(k)
-            w.writerow(items)
+    try:
+        exporting = inventory
+        if multirows is True:
+            with open(filename, "w") as f:
+                w = csv.writer(f, delimiter=",")
+                for k, v in exporting.items():
+                    w.writerow([k]*v)
+        else:
+            with open(filename, "w") as f:
+                w = csv.writer(f, inventory.keys(), delimiter=',')
+                items = []
+                for k in inventory.keys():
+                    count = inventory[k]
+                    for i in range(0, count):
+                        items.append(k)
+                w.writerow(items)
+    except AttributeError:
+        print("Inventory argument must be a dictionary!")
